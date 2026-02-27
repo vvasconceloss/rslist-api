@@ -1,0 +1,8 @@
+[package]
+edition = "2024"
+version = "0.1.0"
+name = "rslist-api"
+authors = ["Victor Vasconcelos"]
+description = "A REST API for a to-do list developed with Rust"
+
+[dependencies]
