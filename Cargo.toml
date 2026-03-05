@@ -6,3 +6,4 @@ authors = ["Victor Vasconcelos"]
 description = "A REST API for a to-do list developed with Rust"
 
 [dependencies]
+sqlx = { version = "0.8.6", features = ["runtime-tokio", "tls-native-tls"] }
