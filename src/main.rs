@@ -1,5 +1,7 @@
 mod errors;
 
+use std::env;
+
 use axum::{Router, routing::get};
 use tracing::{Level, info};
 
@@ -11,8 +13,10 @@ async fn root() -> &'static str {
 
 #[tokio::main]
 async fn main() -> Result<(), ServerError> {
+    dotenvy::dotenv().ok();
     tracing_subscriber::fmt().with_max_level(Level::INFO).init();
 
+    let _database_url = env::var("DATABASE_URL").expect("Failed");
     let app = Router::new().route("/", get(root));
 
     let listener = match tokio::net::TcpListener::bind("0.0.0.0:8080").await {
