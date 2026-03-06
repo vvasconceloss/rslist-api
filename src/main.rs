@@ -2,7 +2,8 @@ mod errors;
 
 use std::env;
 
-use axum::{Router, routing::get};
+use axum::{Extension, Router, routing::get};
+use sqlx::postgres::PgPoolOptions;
 use tracing::{Level, info};
 
 use crate::errors::ServerError;
@@ -16,8 +17,15 @@ async fn main() -> Result<(), ServerError> {
     dotenvy::dotenv().ok();
     tracing_subscriber::fmt().with_max_level(Level::INFO).init();
 
-    let _database_url = env::var("DATABASE_URL").expect("Failed");
-    let app = Router::new().route("/", get(root));
+    let database_url = env::var("DATABASE_URL").expect("Failed");
+    let database_pool = PgPoolOptions::new()
+        .connect(&database_url)
+        .await
+        .expect("Failed");
+
+    info!("Connection to the database successfully established");
+
+    let app = Router::new().route("/", get(root).layer(Extension(database_pool)));
 
     let listener = match tokio::net::TcpListener::bind("0.0.0.0:8080").await {
         Ok(listener) => listener,
