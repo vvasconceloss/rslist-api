@@ -10,6 +10,7 @@ axum = { version = "0.8.8"}
 tokio = { version = "1.50.0", features = ["full"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "tls-native-tls"] }
 
+dotenvy = "0.15.7"
 thiserror = "2.0.18"
 
 tracing = "0.1.44"
