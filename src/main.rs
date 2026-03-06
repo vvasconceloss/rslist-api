@@ -1,12 +1,10 @@
+mod connection;
 mod errors;
 
-use std::env;
-
 use axum::{Extension, Router, routing::get};
-use sqlx::postgres::PgPoolOptions;
 use tracing::{Level, info};
 
-use crate::errors::ServerError;
+use crate::{connection::connect, errors::ServerError};
 
 async fn root() -> &'static str {
     "Hello, World!"
@@ -17,11 +15,10 @@ async fn main() -> Result<(), ServerError> {
     dotenvy::dotenv().ok();
     tracing_subscriber::fmt().with_max_level(Level::INFO).init();
 
-    let database_url = env::var("DATABASE_URL").expect("Failed");
-    let database_pool = PgPoolOptions::new()
-        .connect(&database_url)
-        .await
-        .expect("Failed");
+    let database_pool = match connect().await {
+        Ok(pool) => pool,
+        Err(_) => return Err(ServerError::ConnectionError),
+    };
 
     info!("Connection to the database successfully established");
 
