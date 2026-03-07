@@ -3,11 +3,11 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum ServerError {
     #[error("Failed to bind TCP listener")]
-    TcpListenerError,
+    TcpListener,
 
     #[error("Failed to serve Axum server")]
-    AxumServerError,
+    AxumServer,
 
     #[error("Failed to connect to the database")]
-    ConnectionError,
+    Connection,
 }

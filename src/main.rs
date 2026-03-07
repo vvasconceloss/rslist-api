@@ -17,7 +17,7 @@ async fn main() -> Result<(), ServerError> {
 
     let database_pool = match connect().await {
         Ok(pool) => pool,
-        Err(_) => return Err(ServerError::ConnectionError),
+        Err(_) => return Err(ServerError::Connection),
     };
 
     info!("Connection to the database successfully established");
@@ -26,14 +26,14 @@ async fn main() -> Result<(), ServerError> {
 
     let listener = match tokio::net::TcpListener::bind("0.0.0.0:8080").await {
         Ok(listener) => listener,
-        Err(_) => return Err(ServerError::TcpListenerError),
+        Err(_) => return Err(ServerError::TcpListener),
     };
 
     info!("Server running on http://0.0.0.0:8080");
 
     axum::serve(listener, app)
         .await
-        .map_err(|_e| ServerError::AxumServerError)?;
+        .map_err(|_e| ServerError::AxumServer)?;
 
     Ok(())
 }
